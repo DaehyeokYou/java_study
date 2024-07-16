@@ -1,9 +1,11 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Random;
 import java.util.Set;
@@ -256,7 +258,142 @@ public class StreamStudy {
         names.stream().forEach(System.out::println);
     }
 
+    static void advancedStreamStudy() {
+        /* 성능 향상 */
+        List<String> list = new ArrayList<>();
+        list.add("Eric");
+        list.add("Elena");
+        list.add("Java");
 
+        // 범위 줄이기: skip, filter, distinct
+        // bad example
+        list.stream()
+                .map(el -> { // 3번 "map was called"
+                    System.out.println("map was called");
+                    return el.substring(0, 3);
+                })
+                .skip(2)
+                .collect(Collectors.toList());
+        // good example
+        list.stream()
+                .skip(2)
+                .map(el -> { // 1번 "map was called"
+                    System.out.println("map was called");
+                    return el.substring(0, 3);
+                })
+                .collect(Collectors.toList());
+
+        // Stream 재사용
+        // bad example
+        Stream<String> stream =
+                Stream.of("Eric", "Elena", "Java")
+                        .filter(name -> name.contains("a"));
+        Optional<String> firstElement = stream.findFirst();
+        // Optional<String> anyElement = stream.findAny(); // IllegalStateException: stream has already been operated upon or closed
+
+        // good example: List에 저장하고 필요할 때 마다 꺼내 쓰기
+        List<String> names =
+                Stream.of("Eric", "Elena", "Java")
+                        .filter(name -> name.contains("a"))
+                        .collect(Collectors.toList());
+        Optional<String> firstElement2 = names.stream().findFirst();
+        Optional<String> anyElement2 = names.stream().findAny();
+
+        // 지연 처리: Lazy Invocation
+        // bad example
+        list.stream()
+                .filter(el -> { // LazyFilter1 출력 안됨.
+                    System.out.println("LazyFilter1");
+                    return el.contains("a");
+                });
+        // good example
+        list.stream()
+                .filter(el -> { // LazyFilter2 3번 출력 됨.
+                    System.out.println("LazyFilter2");
+                    return el.contains("a");
+                }).collect(Collectors.toList());
+
+        // Null-safe Stream
+        List<String> nullList = null;
+        // bad example
+//        nullList.stream()
+//                .filter(str -> str.contains("a"))
+//                .map(String::length)
+//                .forEach(System.out::println); // NPE!
+        // good example
+        collectionToStream(nullList)
+                .filter(str -> str.contains("a"))
+                .map(String::length)
+                .forEach(System.out::println); // []
+    }
+    static <T> Stream<T> collectionToStream(Collection<T> collection) {
+        return Optional
+                .ofNullable(collection)
+                .map(Collection::stream)
+                .orElseGet(Stream::empty);
+    }
+
+    static void streamSweetTips() {
+        // 주의 사항
+        // Collections.synchronizedList(...).stream().forEach() // not synchronizeD
+        // Collections.synchronizedList(...).forEach()  // synchronized
+
+        // collect(Collectors.maxBy()) // Optional
+        // Stream.max() // NPE 발생 가능
+
+//        collection.stream().forEach()
+//  → collection.forEach()
+//
+//        collection.stream().toArray()
+//  → collection.toArray()
+//
+//        Arrays.asList().stream()
+//  → Arrays.stream() or Stream.of()
+//
+//        Collections.emptyList().stream()
+//  → Stream.empty()
+//
+//        stream.filter().findFirst().isPresent()
+//  → stream.anyMatch()
+//
+//        stream.collect(counting())
+//  → stream.count()
+//
+//        stream.collect(maxBy())
+//  → stream.max()
+//
+//        stream.collect(mapping())
+//  → stream.map().collect()
+//
+//        stream.collect(reducing())
+//  → stream.reduce()
+//
+//        stream.collect(summingInt())
+//  → stream.mapToInt().sum()
+//
+//        stream.map(x -> {...; return x;})
+//  → stream.peek(x -> ...)
+//
+//        !stream.anyMatch()
+//  → stream.noneMatch()
+//
+//        !stream.anyMatch(x -> !(...))
+//  → stream.allMatch()
+//
+//        stream.map().anyMatch(Boolean::booleanValue)
+//  → stream.anyMatch()
+//
+//        IntStream.range(expr1, expr2).mapToObj(x -> array[x])
+//  → Arrays.stream(array, expr1, expr2)
+//
+//        Collection.nCopies(count, ...)
+//  → Stream.generate().limit(count)
+//
+//        stream.sorted(comparator).findFirst()
+//  → Stream.min(comparator)
+
+
+    }
 
     static void streamPrint(Stream<?> stream) {
         stream.forEach(System.out::println);

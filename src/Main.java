@@ -15,5 +15,6 @@ public class Main {
 //        StreamStudy.streamTypeStudy();
 //        StreamStudy.streamManufactureStudy();
 //        StreamStudy.streamDoneStudy();
+//        StreamStudy.advancedStreamStudy();
     }
 }
