@@ -12,6 +12,8 @@ public class Main {
 
         /* Stream Test */
 //        StreamStudy.streamCreateStudy();
-        StreamStudy.streamTypeStudy();
+//        StreamStudy.streamTypeStudy();
+//        StreamStudy.streamManufactureStudy();
+//        StreamStudy.streamDoneStudy();
     }
 }
