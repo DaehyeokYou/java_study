@@ -146,11 +146,11 @@ public class StreamStudy {
         //streamPrint(mapStream); //
 
         /* 3.4 FlatMap <R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper); */
-//        List<List<String>> nestedList = Arrays.asList(Arrays.asList("a"), Arrays.asList("b"));
-//        List<String> flatList =
-//                nestedList.stream()
-//                        .flatMap(Collection::stream)
-//                        .collect(Collectors.toList());
+        List<List<String>> nestedList = Arrays.asList(Arrays.asList("a", "b", "c"), Arrays.asList("A", "B", "C"));
+        List<String> flatList = nestedList.stream()
+                                            .flatMap(Collection::stream)
+                                            .collect(Collectors.toList());
+        flatList.forEach(System.out::println);
 
         /* 3.5 Sorting */
         IntStream.of(14, 11, 20, 39, 23)
