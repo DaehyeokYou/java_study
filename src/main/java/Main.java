@@ -1,7 +1,7 @@
 import reactor.core.publisher.Flux;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         //System.out.println("Hello World!!");
 
         /* Collection Study */
@@ -19,7 +19,10 @@ public class Main {
 //        StreamStudy.advancedStreamStudy();
 
         /* Lambda Study */
-        LambdaStudy.lambdaStudy();
+        //LambdaStudy.lambdaStudy();
         //LambdaStudy.functionalInterfaceStudy();
+
+        /* Reactive(Reactor) Study */
+        ReactiveStudy.fluxStudy();
     }
 }
