@@ -1,4 +1,5 @@
 import java.sql.SQLOutput;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -100,5 +101,54 @@ public class ReactiveStudy {
 
         Flux<Integer> flatMapManyExam3 = flatmapManyStudyMono.flatMapMany(i -> Flux.range(1,3).flatMapIterable(e -> List.of(e * e)));
         flatMapManyExam3.subscribe(System.out::println); // 1, 4, 9
+
     }
+
+    static void fluxExam() throws InterruptedException {
+        Flux.fromIterable(List.of(1,2,3,4,5))
+                .map(i -> {
+                    System.out.println("1map: " + i + ", " + Thread.currentThread());
+                    return i*i;
+                }).flatMap(i -> {
+                    System.out.println("1flatmap: " + i + ", " + Thread.currentThread());
+                    return Mono.just(i+i);
+                }).filter(i -> {
+                    System.out.println("1filter: " + i + ", " + Thread.currentThread());
+                    return i % 2 == 0;
+                })
+                .subscribe(i -> System.out.println("1completed: " + i + ", " + Thread.currentThread()));
+        System.out.println("============================================");
+        Flux.just(1,2,3,4,5)
+                .map(i -> {
+                    System.out.println("2map: " + i + ", " + Thread.currentThread());
+                    return i*i;
+                })
+                .publishOn(Schedulers.parallel())
+                .flatMap(i -> {
+                    System.out.println("2flatmap: " + i + ", " + Thread.currentThread());
+                    return Mono.just(i+i);
+                })
+                .filter(i -> {
+                    System.out.println("2filter: " + i + ", " + Thread.currentThread());
+                    return i % 2 == 0;
+                })
+                .subscribeOn(Schedulers.parallel())
+                .subscribe(i -> System.out.println("2completed: " + i + ", " + Thread.currentThread()));
+        System.out.println("============================================");
+        List.of(1,2,3,4,5).stream()
+                .map(i -> {
+                    System.out.println("Smap: " + i + ", " + Thread.currentThread());
+                    return i * i;
+                }).flatMap(i -> {
+                    System.out.println("Sflatmap: " + i + ", " + Thread.currentThread());
+                    return List.of(i+i).stream();
+                }).filter(i -> {
+                    System.out.println("Sfilter: " + i + ", " + Thread.currentThread());
+                    return i % 2 == 0;
+                }).forEach(i -> System.out.println("Scompleted: " + i + ", " + Thread.currentThread()));
+
+
+        Thread.sleep(1000);
+    }
+
 }

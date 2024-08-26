@@ -23,6 +23,7 @@ public class Main {
         //LambdaStudy.functionalInterfaceStudy();
 
         /* Reactive(Reactor) Study */
-        ReactiveStudy.fluxStudy();
+//        ReactiveStudy.fluxStudy();
+        ReactiveStudy.fluxExam();
     }
 }
